@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.bassant.myapplication.MainActivity">
+    <item
+        android:id="@+id/top_rated"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/top_rated"
+        />
+    <item
+        android:id="@+id/most_popular"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Most popular"
+        />
+</menu>
