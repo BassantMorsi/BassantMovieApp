@@ -31,6 +31,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/btn_star"
-        app:backgroundTint="@android:color/holo_orange_dark" />
+        app:backgroundTint="@android:color/holo_orange_dark"
+        tools:targetApi="ice_cream_sandwich" />
 
 </android.support.design.widget.CoordinatorLayout>

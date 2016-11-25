@@ -85,20 +85,30 @@ public class Main2Activity extends AppCompatActivity {
 
         TextView title = (TextView)findViewById(R.id.original_title);
         TextView overview = (TextView)findViewById(R.id.overview);
+        TextView date = (TextView)findViewById(R.id.date);
+        TextView rate = (TextView)findViewById(R.id.rate);
         title.append(m.getOriginal_title());
         overview.append(m.getOverview());
+        date.append(m.getRelease_date());
+        rate.append(m.getVote_average());
         ImageView poster =(ImageView)findViewById(R.id.imageView3) ;
         Picasso.with(getApplicationContext()).load(m.getPoster_path()).into(poster);
 
-        //realm = Realm.getDefaultInstance();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+             boolean r =db.insertData(m.getPoster_path(),m.getOriginal_title(),m.getOverview(),m.getMid(),m.getRelease_date(),m.getVote_average());
 
-                Snackbar.make(view, "Failed", Snackbar.LENGTH_LONG)
+                if(r==true){
+                Snackbar.make(view, "Success", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                }else {
+                    Snackbar.make(view, "Failed", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
 
             }
         });

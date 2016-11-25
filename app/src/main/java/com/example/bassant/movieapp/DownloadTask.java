@@ -58,8 +58,13 @@ public class DownloadTask extends AsyncTask<String,Void,List<Movie>>{
                     String str =listObject.getString("poster_path");
                     String str1=listObject.getString("overview");
                     String str2=listObject.getString("original_title");
+                    String str3=listObject.getString("release_date");//date
+                    String str4=listObject.getString("vote_average");//vote
+                    int str5=listObject.getInt("id");
+
+
                     Movie movieD = new Movie();
-                    movieD.set("http://image.tmdb.org/t/p/w185/"+str,str2,str1);
+                    movieD.set("http://image.tmdb.org/t/p/w185/"+str,str2,str1,str3,str4,str5);
                     moviesDetails.add(movieD);
 
                     //poster.add("http://image.tmdb.org/t/p/w185/"+str);

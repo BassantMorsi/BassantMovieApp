@@ -3,6 +3,7 @@ package com.example.bassant.movieapp;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -33,9 +34,11 @@ import java.util.concurrent.ExecutionException;
 public class GridViewFragment extends android.support.v4.app.Fragment {
    // String API_link = "https://api.themoviedb.org/3/movie/top_rated?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1";
    // int x =0;
-
+    DatabaseHelper db;
     ImageAdapter imageAdapter ;
     GridView gridView1  ;
+    List<Movie> favoritesMovie;
+    Movie fMovie;
     List<Movie> movies;//dah elly bab3toh le details activity
     public GridViewFragment() {
     }
@@ -67,6 +70,7 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
                    super.onPostExecute(moviesDetails);
                    imageAdapter.addAll(moviesDetails);
                    gridView1.setAdapter(imageAdapter);
+                   movies.clear();
                    movies.addAll(moviesDetails);
                }
            };
@@ -83,6 +87,7 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
                     super.onPostExecute(moviesDetails);
                     imageAdapter.addAll(moviesDetails);
                     gridView1.setAdapter(imageAdapter);
+                    movies.clear();
                     movies.addAll(moviesDetails);
                 }
             };
@@ -90,6 +95,30 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
 
             Toast.makeText(getContext(),"Most Popular",Toast.LENGTH_LONG).show();
             return true;
+        }
+        else if(id==R.id.favorite)
+        {
+           //   db = new DatabaseHelper(getContext());
+            favoritesMovie = new ArrayList<Movie>();
+            Cursor c = db.getAllData();
+            if(c.getCount()==0)
+            {
+                Toast.makeText(getContext(),"There Is No Favorites", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                while(c.moveToNext())
+                {
+
+                    fMovie = new Movie();
+                    fMovie.set(c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5),c.getInt(0));
+                    favoritesMovie.add(fMovie);
+                }
+                imageAdapter.addAll(favoritesMovie);
+                gridView1.setAdapter(imageAdapter);
+                movies.clear();
+                movies.addAll(favoritesMovie);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -99,11 +128,12 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.gridview_fragment, container, false);
         gridView1 = (GridView) v.findViewById(R.id.gridView1);
-        DownloadTask downloadTask = new DownloadTask() {
+        imageAdapter =new ImageAdapter(v.getContext());
+        movies= new ArrayList<Movie>();
+      /*  DownloadTask downloadTask = new DownloadTask() {
             @Override
             protected void onPostExecute(List<Movie> moviesDetails) {
                 super.onPostExecute(moviesDetails);
-                imageAdapter =new ImageAdapter(v.getContext());
                 Log.i("heeeeeeeeeeeeeeeeeeeee7",moviesDetails.get(3).getPoster_path());
                 imageAdapter.addAll(moviesDetails);
                 gridView1.setAdapter(imageAdapter);
@@ -112,7 +142,28 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
             }
         };//this = activity context =  getApplicationContext()
         downloadTask.execute("https://api.themoviedb.org/3/movie/top_rated?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+         */
+        db = new DatabaseHelper(getContext());
+        favoritesMovie = new ArrayList<Movie>();
+        Cursor c = db.getAllData();
+        if(c.getCount()==0)
+        {
+            Toast.makeText(getContext(),"There Is No Favorites", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            while(c.moveToNext())
+            {
 
+                fMovie = new Movie();
+                fMovie.set(c.getString(1),c.getString(2),c.getString(3),c.getString(4),c.getString(5),c.getInt(0));
+                favoritesMovie.add(fMovie);
+            }
+            imageAdapter.addAll(favoritesMovie);
+            gridView1.setAdapter(imageAdapter);
+            movies.clear();
+            movies.addAll(favoritesMovie);
+        }
 
         gridView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
