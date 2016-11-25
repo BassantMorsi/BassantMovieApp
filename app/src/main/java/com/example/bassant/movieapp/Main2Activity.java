@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -69,83 +71,21 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
         db = new DatabaseHelper(this);
-       // realm = Realm.getDefaultInstance();
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        m = new Movie();
-        m = (Movie) getIntent().getSerializableExtra("MyClass");
-        Log.i("heeeeeh",m.getPoster_path());
+        if (savedInstanceState == null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+             DetailsFragment detailsFragment =new DetailsFragment();
+            fragmentTransaction.add(R.id.fragmentDetails_container, detailsFragment);//(id bta3 elcontainer,we el7aga elly 3ayza adefha :D )
+            fragmentTransaction.commit();
+        }
 
 
 
-        TextView title = (TextView)findViewById(R.id.original_title);
-        TextView overview = (TextView)findViewById(R.id.overview);
-        TextView date = (TextView)findViewById(R.id.date);
-        TextView rate = (TextView)findViewById(R.id.rate);
-        title.append(m.getOriginal_title());
-        overview.append(m.getOverview());
-        date.append(m.getRelease_date());
-        rate.append(m.getVote_average());
-        ImageView poster =(ImageView)findViewById(R.id.imageView3) ;
-        Picasso.with(getApplicationContext()).load(m.getPoster_path()).into(poster);
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-             boolean r =db.insertData(m.getPoster_path(),m.getOriginal_title(),m.getOverview(),m.getMid(),m.getRelease_date(),m.getVote_average());
-
-                if(r==true){
-                Snackbar.make(view, "Success", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                }else {
-                    Snackbar.make(view, "Failed", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-
-            }
-        });
     }
-    /*private void save_into_database(final Movie movie, final View view){
-        realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgRealm) {
-                MovieDB user = bgRealm.createObject(MovieDB.class);
-                user.setPoster_path(movie.getPoster_path());
-                user.setOriginal_title(movie.getOriginal_title());
-                user.setOverview(movie.getOverview());
 
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                // Transaction was a success.
-
-                Snackbar.make(view, "Saved To Favorites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                // Transaction failed and was automatically canceled.
-                Snackbar.make(view, "Failed", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-            }
-        });
-    }*/
-
-
- /*   @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
-    }*/
 }
