@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
@@ -75,6 +76,14 @@ public class Main2Activity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        DownloadTrailer downloadTrailer =new DownloadTrailer(){
+            @Override
+            protected void onPostExecute(List<String> strings) {
+                super.onPostExecute(strings);
+                Log.i("beeeeb",strings.get(2));
+            }
+        };
+        downloadTrailer.execute("https://api.themoviedb.org/3/movie/278/videos?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
 
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();
