@@ -12,29 +12,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Bassant on 11/26/2016.
+ * Created by Bassant on 11/27/2016.
  */
 
-public class Adapter extends BaseAdapter {
+public class AdapterReview extends BaseAdapter {
     private Context context;
-    private  List<String>  trailer =null;
+    private List<Review> reviews =null;
 
-    Adapter(Context c)
+    public AdapterReview(Context c)
     {
-        context = c;
-        trailer= new ArrayList<String>();
+       context = c ;
+        reviews = new ArrayList<>();
     }
 
-    public  void addAll (List<String> t )
+    public  void addAll (List<Review>  r )
     {
-        trailer.clear();
-        trailer=t;
+        reviews.clear();
+        reviews = r;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return trailer.size();
+        return reviews.size();
     }
 
     @Override
@@ -49,24 +49,26 @@ public class Adapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-
         View grid ;
         TextView textView;
+        TextView textView1;
         ImageView imageView;
-        //LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         if (view == null) {
 
-        grid = inflater.inflate(R.layout.trailer_item, viewGroup,false);//xml file msh image by7awel xml le java code  or (R.layout.movie_item, null)
+            grid = inflater.inflate(R.layout.review_item, viewGroup,false);//xml file msh image by7awel xml le java code  or (R.layout.movie_item, null)
 
         } else {
-        grid =  view;
+            grid =  view;
         }
-         textView = (TextView)grid.findViewById(R.id.trailerNum);
-         imageView =(ImageView)grid.findViewById(R.id.youtube);
-         textView.setText("Trailer "+(i+1));
-         imageView.setImageResource(R.drawable.logo2);
-
+        textView = (TextView)grid.findViewById(R.id.author);
+        textView1 = (TextView)grid.findViewById(R.id.content);
+        textView.setText(reviews.get(i).getAuthor());
+        textView1.setText(reviews.get(i).getContent());
+        imageView=(ImageView)grid.findViewById(R.id.imageView99);
+        imageView.setImageResource(R.drawable.user);
         return grid;
     }
 }

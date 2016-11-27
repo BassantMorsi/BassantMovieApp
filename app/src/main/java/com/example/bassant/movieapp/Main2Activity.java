@@ -76,6 +76,8 @@ public class Main2Activity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //test
+
         DownloadTrailer downloadTrailer =new DownloadTrailer(){
             @Override
             protected void onPostExecute(List<String> strings) {
@@ -84,6 +86,15 @@ public class Main2Activity extends AppCompatActivity {
             }
         };
         downloadTrailer.execute("https://api.themoviedb.org/3/movie/278/videos?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+        //test
+        DownloadReview downloadReview = new DownloadReview(){
+            @Override
+            protected void onPostExecute(List<Review> reviews) {
+                super.onPostExecute(reviews);
+                Log.i("teeeet",reviews.get(1).getAuthor());
+            }
+        };
+        downloadReview.execute("https://api.themoviedb.org/3/movie/278/reviews?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
 
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getSupportFragmentManager();

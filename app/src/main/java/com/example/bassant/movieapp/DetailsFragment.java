@@ -30,9 +30,14 @@ public class DetailsFragment extends Fragment {
 
     private Movie m;
     DatabaseHelper db;
-    GridView gridView2 ;
+   // GridView gridView2 ;
+    ExpandableHeightGridView gridView2;
     Adapter adapter;
     List<String> youtubeLinks ;
+    //GridView gridView3;
+    ExpandableHeightGridView gridView3;
+    AdapterReview adapterReview ;
+    List<Review> reviews;
 
     public DetailsFragment() {
         super();
@@ -86,7 +91,7 @@ public class DetailsFragment extends Fragment {
             }
         });
 
-        gridView2 = (GridView)v.findViewById(R.id.gridView2);
+        gridView2 = (ExpandableHeightGridView) v.findViewById(R.id.gridView2);
         adapter =new Adapter(v.getContext());
         youtubeLinks = new ArrayList<String>();
         DownloadTrailer downloadTrailer =new DownloadTrailer(){
@@ -95,7 +100,9 @@ public class DetailsFragment extends Fragment {
                 super.onPostExecute(strings);
                 youtubeLinks = strings;
                 adapter.addAll(strings);
+                gridView2.setExpanded(true);
                 gridView2.setAdapter(adapter);
+
             }
         };
         downloadTrailer.execute("https://api.themoviedb.org/3/movie/"+m.getMid()+"/videos?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
@@ -104,13 +111,27 @@ public class DetailsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeLinks.get(i)));
-                Toast.makeText(v.getContext(), " hhhhhhhhhhh", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+               // Toast.makeText(v.getContext(), " hhhhhhhhhhh", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
 
             }
         });
 
+        gridView3 = (ExpandableHeightGridView) v.findViewById(R.id.gridView3);
+        adapterReview =new AdapterReview(v.getContext());
+        reviews = new ArrayList<>() ;
+        DownloadReview downloadReview = new DownloadReview(){
+            @Override
+            protected void onPostExecute(List<Review> reviews) {
+                super.onPostExecute(reviews);
+                adapterReview.addAll(reviews);
+                gridView3.setExpanded(true);
+                gridView3.setAdapter(adapterReview);
 
+            }
+        };
+        downloadReview.execute("https://api.themoviedb.org/3/movie/"+m.getMid()+"/reviews?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
         return v;
     }
 }

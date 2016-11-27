@@ -13,7 +13,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -35,7 +35,7 @@
                 android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="30">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:id="@+id/original_title"
-                    android:textSize="30sp"
+                    android:textSize="50sp"
                     android:textColor="@android:color/holo_orange_dark"
                     tools:targetApi="ice_cream_sandwich"
                     android:layout_weight="1" />
@@ -76,30 +76,6 @@
             android:textColor="?android:attr/textColorPrimaryInverseDisableOnly"
             android:layout_weight="1" />
 
-        <TextView
-            android:text="Trailers"
-            android:textSize="30dp"
-            android:textColor="@android:color/background_light"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="20dp"
-            android:padding="5dp"
-            android:background="#404040" />
-
-        <GridView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:numColumns="1"
-            android:verticalSpacing="0dp"
-            android:horizontalSpacing="0dp"
-            android:stretchMode="columnWidth"
-            android:id="@+id/gridView2"
-            />
-
-
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_width="wrap_content"
@@ -110,11 +86,50 @@
             app:backgroundTint="@android:color/holo_orange_dark"
             tools:targetApi="ice_cream_sandwich" />
 
+        <TextView
+            android:text="Trailers"
+            android:textSize="30sp"
+            android:textColor="@android:color/background_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:padding="5dp"
+            android:background="#404040" />
 
+        <com.example.bassant.movieapp.ExpandableHeightGridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="1"
+            android:verticalSpacing="0dp"
+            android:horizontalSpacing="0dp"
+            android:stretchMode="columnWidth"
+            android:id="@+id/gridView2"
+            />
+
+        <TextView
+            android:text="Review"
+            android:textSize="30sp"
+            android:textColor="@android:color/background_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView1"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
+            android:padding="5dp"
+            android:background="#404040" />
+
+        <com.example.bassant.movieapp.ExpandableHeightGridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="1"
+            android:verticalSpacing="0dp"
+            android:horizontalSpacing="0dp"
+            android:stretchMode="columnWidth"
+            android:id="@+id/gridView3"
+            />
 
     </LinearLayout>
-
-
-
 
 </ScrollView>
