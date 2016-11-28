@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -25,15 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.ExecutionException;
-//import android.support.v4.app.Fragment;
 
 /**
  * Created by Bassant on 10/25/2016.
  */
 
 public class GridViewFragment extends android.support.v4.app.Fragment {
-   // String API_link = "https://api.themoviedb.org/3/movie/top_rated?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1";
-   // int x =0;
+
+
     DatabaseHelper db;
     ImageAdapter imageAdapter ;
     GridView gridView1  ;
@@ -45,6 +46,14 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
     void setMovieListener (MovieListener m)
     {
         this.movieListener = m ;
+    }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public GridViewFragment() {
@@ -71,24 +80,33 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
 
         int id = item.getItemId();
         if (id == R.id.top_rated) {
-           DownloadTask downloadTask1 =new DownloadTask(){
-               @Override
-               protected void onPostExecute(List<Movie> moviesDetails) {
-                   super.onPostExecute(moviesDetails);
-                   imageAdapter.addAll(moviesDetails);
-                   gridView1.setAdapter(imageAdapter);
-                   movies.clear();
-                   movies.addAll(moviesDetails);
-               }
-           };
-           downloadTask1.execute("https://api.themoviedb.org/3/movie/popular?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+          if(isNetworkAvailable()){
+            DownloadTask downloadTask1 = new DownloadTask() {
+                @Override
+                protected void onPostExecute(List<Movie> moviesDetails) {
+                    super.onPostExecute(moviesDetails);
+                    if (moviesDetails.isEmpty()) {
+                        Toast.makeText(getContext(), "NO Internet Connection", Toast.LENGTH_LONG).show();
+                    } else {
+                        imageAdapter.addAll(moviesDetails);
+                        gridView1.setAdapter(imageAdapter);
+                        movies.clear();
+                        movies.addAll(moviesDetails);
+                    }
 
-            Toast.makeText(getContext(),"Top Rated",Toast.LENGTH_LONG).show();
+                }
+            };
+            downloadTask1.execute("https://api.themoviedb.org/3/movie/popular?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+            Toast.makeText(getContext(), "Top Rated", Toast.LENGTH_LONG).show();
             return true;
+        }else {
+              Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+          }
         }
-        else if(id == R.id.most_popular)
-        {
-            DownloadTask downloadTask2 =new DownloadTask(){
+        else if(id == R.id.most_popular) {
+
+         if(isNetworkAvailable()){
+            DownloadTask downloadTask2 = new DownloadTask() {
                 @Override
                 protected void onPostExecute(List<Movie> moviesDetails) {
                     super.onPostExecute(moviesDetails);
@@ -100,8 +118,13 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
             };
             downloadTask2.execute("https://api.themoviedb.org/3/movie/top_rated?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
 
-            Toast.makeText(getContext(),"Most Popular",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Most Popular", Toast.LENGTH_LONG).show();
             return true;
+        }else
+         {
+             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+
+         }
         }
         else if(id==R.id.favorite)
         {
@@ -137,19 +160,7 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
         gridView1 = (GridView) v.findViewById(R.id.gridView1);
         imageAdapter =new ImageAdapter(v.getContext());
         movies= new ArrayList<Movie>();
-      /*  DownloadTask downloadTask = new DownloadTask() {
-            @Override
-            protected void onPostExecute(List<Movie> moviesDetails) {
-                super.onPostExecute(moviesDetails);
-                Log.i("heeeeeeeeeeeeeeeeeeeee7",moviesDetails.get(3).getPoster_path());
-                imageAdapter.addAll(moviesDetails);
-                gridView1.setAdapter(imageAdapter);
-                movies= new ArrayList<Movie>();
-                movies.addAll(moviesDetails);
-            }
-        };//this = activity context =  getApplicationContext()
-        downloadTask.execute("https://api.themoviedb.org/3/movie/top_rated?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
-         */
+
         db = new DatabaseHelper(getContext());
         favoritesMovie = new ArrayList<Movie>();
         Cursor c = db.getAllData();

@@ -1,6 +1,9 @@
 package com.example.bassant.movieapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,22 +46,18 @@ public class DetailsFragment extends Fragment {
         super();
     }
 
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        m = new Movie();
-//        if(getActivity().getIntent().getSerializableExtra("MyClass")!=null){
-//            m = (Movie) getActivity().getIntent().getSerializableExtra("MyClass");
-//        }else if(getArguments()!= null){
-//
-//            m = (Movie)getArguments().getSerializable("MyClass");
-//        }else{
-//
-//            Log.i("heeeeeh","lessa null ya habla ");
-//
-//        }
-
     }
 
     @Nullable
@@ -70,18 +69,18 @@ public class DetailsFragment extends Fragment {
 
 
         m = new Movie();
-        m = (Movie)getArguments().getSerializable("MyClass");
+        m = (Movie) getArguments().getSerializable("MyClass");
 
 
-        TextView title = (TextView)v.findViewById(R.id.original_title);
-        TextView overview = (TextView)v.findViewById(R.id.overview);
-        TextView date = (TextView)v.findViewById(R.id.date);
-        TextView rate = (TextView)v.findViewById(R.id.rate);
+        TextView title = (TextView) v.findViewById(R.id.original_title);
+        TextView overview = (TextView) v.findViewById(R.id.overview);
+        TextView date = (TextView) v.findViewById(R.id.date);
+        TextView rate = (TextView) v.findViewById(R.id.rate);
         title.append(m.getOriginal_title());
         overview.append(m.getOverview());
         date.append(m.getRelease_date());
-        rate.append(m.getVote_average()+"/10");
-        ImageView poster =(ImageView)v.findViewById(R.id.imageView3) ;
+        rate.append(m.getVote_average() + "/10");
+        ImageView poster = (ImageView) v.findViewById(R.id.imageView3);
         Picasso.with(v.getContext()).load(m.getPoster_path()).into(poster);
 
 
@@ -90,13 +89,13 @@ public class DetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                boolean r =db.insertData(m.getPoster_path(),m.getOriginal_title(),m.getOverview(),m.getMid(),m.getRelease_date(),m.getVote_average());
+                boolean r = db.insertData(m.getPoster_path(), m.getOriginal_title(), m.getOverview(), m.getMid(), m.getRelease_date(), m.getVote_average());
 
-                if(r==true){
+                if (r) {
                     Snackbar.make(view, "Movie has been added to favorite", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                }else {
-                    if(db.delete(m.getMid())) {
+                } else {
+                    if (db.delete(m.getMid())) {
                         Snackbar.make(view, "Movie has been deleted to favorite", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
@@ -106,36 +105,37 @@ public class DetailsFragment extends Fragment {
         });
 
         gridView2 = (ExpandableHeightGridView) v.findViewById(R.id.gridView2);
-        adapter =new Adapter(v.getContext());
+        adapter = new Adapter(v.getContext());
         youtubeLinks = new ArrayList<String>();
-        DownloadTrailer downloadTrailer =new DownloadTrailer(){
-            @Override
-            protected void onPostExecute(List<String> strings) {
-                super.onPostExecute(strings);
-                youtubeLinks = strings;
-                adapter.addAll(strings);
-                gridView2.setExpanded(true);
-                gridView2.setAdapter(adapter);
+        if (isNetworkAvailable()){
+            DownloadTrailer downloadTrailer = new DownloadTrailer() {
+                @Override
+                protected void onPostExecute(List<String> strings) {
+                    super.onPostExecute(strings);
+                    youtubeLinks = strings;
+                    adapter.addAll(strings);
+                    gridView2.setExpanded(true);
+                    gridView2.setAdapter(adapter);
 
-            }
-        };
-        downloadTrailer.execute("https://api.themoviedb.org/3/movie/"+m.getMid()+"/videos?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+                }
+            };
+        downloadTrailer.execute("https://api.themoviedb.org/3/movie/" + m.getMid() + "/videos?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
 
         gridView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(youtubeLinks.get(i)));
                 startActivity(intent);
-               // Toast.makeText(v.getContext(), " hhhhhhhhhhh", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(v.getContext(), " hhhhhhhhhhh", Toast.LENGTH_SHORT).show();
                 startActivity(intent);
 
             }
         });
 
         gridView3 = (ExpandableHeightGridView) v.findViewById(R.id.gridView3);
-        adapterReview =new AdapterReview(v.getContext());
-        reviews = new ArrayList<>() ;
-        DownloadReview downloadReview = new DownloadReview(){
+        adapterReview = new AdapterReview(v.getContext());
+        reviews = new ArrayList<>();
+        DownloadReview downloadReview = new DownloadReview() {
             @Override
             protected void onPostExecute(List<Review> reviews) {
                 super.onPostExecute(reviews);
@@ -145,7 +145,10 @@ public class DetailsFragment extends Fragment {
 
             }
         };
-        downloadReview.execute("https://api.themoviedb.org/3/movie/"+m.getMid()+"/reviews?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+        downloadReview.execute("https://api.themoviedb.org/3/movie/" + m.getMid() + "/reviews?api_key=2f763afd6d5c3ded6e3bfa5ec32e32e1");
+    }else {Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();}
         return v;
     }
-}
+
+    }
+
