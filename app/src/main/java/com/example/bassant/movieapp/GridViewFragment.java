@@ -40,6 +40,13 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
     List<Movie> favoritesMovie;
     Movie fMovie;
     List<Movie> movies;//dah elly bab3toh le details activity
+
+    private  MovieListener movieListener;
+    void setMovieListener (MovieListener m)
+    {
+        this.movieListener = m ;
+    }
+
     public GridViewFragment() {
     }
 
@@ -168,10 +175,8 @@ public class GridViewFragment extends android.support.v4.app.Fragment {
         gridView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(getActivity(), Main2Activity.class);
-                intent.putExtra("MyClass",  movies.get(i));
-                Log.i("888888888888888888888", movies.get(i).getPoster_path());
-                startActivity(intent);
+
+                   movieListener.setSelectedMovie(movies.get(i));
 
             }
         });

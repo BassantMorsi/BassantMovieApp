@@ -47,6 +47,17 @@ public class DetailsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        m = new Movie();
+//        if(getActivity().getIntent().getSerializableExtra("MyClass")!=null){
+//            m = (Movie) getActivity().getIntent().getSerializableExtra("MyClass");
+//        }else if(getArguments()!= null){
+//
+//            m = (Movie)getArguments().getSerializable("MyClass");
+//        }else{
+//
+//            Log.i("heeeeeh","lessa null ya habla ");
+//
+//        }
 
     }
 
@@ -57,9 +68,10 @@ public class DetailsFragment extends Fragment {
         final View v = inflater.inflate(R.layout.details_fragment, container, false);
         db = new DatabaseHelper(getContext());
 
+
         m = new Movie();
-        m = (Movie) getActivity().getIntent().getSerializableExtra("MyClass");
-        Log.i("heeeeeh",m.getPoster_path());
+        m = (Movie)getArguments().getSerializable("MyClass");
+
 
         TextView title = (TextView)v.findViewById(R.id.original_title);
         TextView overview = (TextView)v.findViewById(R.id.overview);
@@ -81,11 +93,13 @@ public class DetailsFragment extends Fragment {
                 boolean r =db.insertData(m.getPoster_path(),m.getOriginal_title(),m.getOverview(),m.getMid(),m.getRelease_date(),m.getVote_average());
 
                 if(r==true){
-                    Snackbar.make(view, "Success", Snackbar.LENGTH_LONG)
+                    Snackbar.make(view, "Movie has been added to favorite", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }else {
-                    Snackbar.make(view, "Failed", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    if(db.delete(m.getMid())) {
+                        Snackbar.make(view, "Movie has been deleted to favorite", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
                 }
 
             }
